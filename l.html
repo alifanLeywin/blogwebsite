@@ -1,0 +1,28 @@
+@foreach ( $articles as $item )
+            <tr class="text-center">
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->title }}</td>
+                <td>{{ $item->Category->name }}</td>
+                <td>{{ $item->views }}x</td>
+
+                @if ($item->status == 0)
+                        <td>
+                            <span class="badge bg-danger">Private</span>
+                        </td>
+                
+                @else
+
+                        <td>
+                            <span class="badge bg-success">Published</span>
+                        </td>
+
+                @endif
+
+                <td>{{ $item->publish_date }}</td>
+                <td>
+                    <a href="" class="btn btn-primary">Detail</a>
+                    <a href="" class="btn btn-warning">Edit</a>
+                    <a href="" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        @endforeach

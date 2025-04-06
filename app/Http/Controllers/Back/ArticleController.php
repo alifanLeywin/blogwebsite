@@ -16,14 +16,14 @@ class ArticleController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
 
         if (request()->ajax()) {
             $article = Article::with('Category')->latest()->get();
 
             return DataTables::of($article)
             // custom kolom
-                        ->addIndexColumn() //untuk id   
+                        ->addIndexColumn() //untuk id
                         ->addColumn('category_id',function($article){
                             return $article->category->name;
                         })
@@ -33,27 +33,27 @@ class ArticleController extends Controller
                             } else {
                                 return '<span class="badge bg-success">Published</span>';
                             }
-                            
+
                         })
                         ->addColumn('button',function($article){
-                           
+
                             return '<div class="text-center" >
-                                     
-                                            <a href="" class="btn btn-primary">Detail</a>
+
+                                            <a href="article/'.$article->id.'" class="btn btn-primary">Detail</a>
                                             <a href="" class="btn btn-warning">Edit</a>
                                             <a href="" class="btn btn-danger">Delete</a>
-                                    
+
                                   </div>';
-                            
+
                         })
                         // panggil custom kolom
-                        ->rawColumns(['category_id', 'status', 'button'])                    
+                        ->rawColumns(['category_id', 'status', 'button'])
                         ->make();
         }
 
         return view("back.article.index");
-    }  
-  
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -70,7 +70,7 @@ class ArticleController extends Controller
     public function store( ArticleRequest $request)
     {
      $data = $request->validated();
-     
+
      $file = $request->file("img"); //img
      $fileName = uniqid().'.'.$file->getClientOriginalExtension(); //jpg,png,jpeg
      $file->storeAs('back', $fileName, 'public');
@@ -90,7 +90,9 @@ class ArticleController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view("back.article.show", [
+            'article' => Article::find($id)
+        ]);
     }
 
     /**

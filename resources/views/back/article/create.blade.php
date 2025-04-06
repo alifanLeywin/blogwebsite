@@ -32,7 +32,7 @@
                 <div class="col-6">
                     <div class="mb-3">
                         <label for="title">Title</label>
-                        <input type="text" name="title" id="title" class="form-control" value="{{ 
+                        <input type="text" name="title" id="title" class="form-control" value="{{
                         old('title') }}">
                     </div>
                  </div>
@@ -43,7 +43,7 @@
                             <option value="" hidden>-- Choose --</option>
                             @foreach ( $categories as $item )
                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            
+
                             @endforeach
                         </select>
                     </div>
@@ -57,7 +57,7 @@
                 <label for="img">Image (MAX 2MB)</label>
                 <input type="file" name="img" id="img" class="form-control">
              </div>
-                    
+
                     <div class="row">
                         <div class="col-6">
                             <div class="mb-3">

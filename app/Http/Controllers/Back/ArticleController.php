@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Back;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -40,7 +42,7 @@ class ArticleController extends Controller
                             return '<div class="text-center" >
 
                                             <a href="article/'.$article->id.'" class="btn btn-primary">Detail</a>
-                                            <a href="" class="btn btn-warning">Edit</a>
+                                            <a href="article/'.$article->id.'/edit" class="btn btn-warning">Edit</a>
                                             <a href="" class="btn btn-danger">Delete</a>
 
                                   </div>';
@@ -100,15 +102,41 @@ class ArticleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view("back.article.update", [
+            'article'       => Article::find($id),
+            "categories"    => Category::get()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateArticleRequest $request, string $id)
     {
-        //
+        $data = $request->validated();
+
+        if ($request->hasFile('img')) {
+            $file = $request->file("img"); //img
+            $fileName = uniqid().'.'.$file->getClientOriginalExtension(); //jpg,png,jpeg
+            $file->storeAs('back', $fileName, 'public');
+
+
+            // unlink image/delete gambar lama
+            Storage::disk('public')->delete('back/'.$request->oldImg);
+
+
+            $data['img'] = $fileName;
+
+        } else {
+            $data['img'] = $request->oldImg;
+        }
+
+        $data['slug'] = Str::slug($data['title']);
+
+        Article::find($id)->update($data);
+
+        return redirect(url('article'))->with('success','Data article has been Updated');
+
     }
 
     /**
